@@ -219,20 +219,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildSectionHeader('Gestión de Datos'),
           _buildListItem(
             icon: Icons.refresh,
-            title: 'Reiniciar Mis Datos',
-            onTap: () => _showConfirmDialog('Reiniciar'),
-            textColor: AppTheme.accentOrange,
-          ),
-          _buildListItem(
-            icon: Icons.delete_forever,
-            title: 'Eliminar Datos',
-            onTap: () => _showConfirmDialog('Eliminar'),
-            textColor: AppTheme.accentRed,
-          ),
-          _buildListItem(
-            icon: Icons.restart_alt,
-            title: 'Empezar de Nuevo',
-            onTap: () => _showConfirmDialog('Empezar de Nuevo'),
+            title: 'Reiniciar mis Datos',
+            onTap: _showResetDataModal,
             textColor: AppTheme.accentRed,
           ),
           const SizedBox(height: 40),
@@ -937,5 +925,157 @@ class _SettingsScreenState extends State<SettingsScreen> {
         );
       }
     }
+  }
+
+  void _showResetDataModal() {
+    final TextEditingController confirmController = TextEditingController();
+    bool isConfirmEnabled = false;
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          backgroundColor: AppTheme.darkCard,
+          title: Row(
+            children: [
+              Icon(Icons.warning, color: AppTheme.accentRed, size: 32),
+              const SizedBox(width: 12),
+              const Text('Reiniciar Datos'),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Warning text
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppTheme.accentRed.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: AppTheme.accentRed.withOpacity(0.3),
+                      width: 2,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        color: AppTheme.accentRed,
+                        size: 48,
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Esta acción elimina permanentemente todos tus datos y empezarás de nuevo. Esto no se puede deshacer.',
+                        style: TextStyle(
+                          color: AppTheme.accentRed,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Confirmation instruction
+                Text(
+                  'Si está seguro, por favor, escriba REINICIAR en el campo de abajo:',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 12),
+
+                // Text field
+                TextField(
+                  controller: confirmController,
+                  decoration: InputDecoration(
+                    hintText: 'Escriba REINICIAR',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: AppTheme.accentRed,
+                        width: 2,
+                      ),
+                    ),
+                  ),
+                  onChanged: (value) {
+                    setDialogState(() {
+                      isConfirmEnabled =
+                          value.trim().toUpperCase() == 'REINICIAR';
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                confirmController.dispose();
+                Navigator.pop(context);
+              },
+              child: const Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: isConfirmEnabled
+                  ? () {
+                      confirmController.dispose();
+                      Navigator.pop(context);
+
+                      // Show progress
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) => AlertDialog(
+                          backgroundColor: AppTheme.darkCard,
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  AppTheme.accentRed,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              const Text('Reiniciando datos...'),
+                            ],
+                          ),
+                        ),
+                      );
+
+                      // Simulate reset
+                      Future.delayed(const Duration(seconds: 2), () {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: const Text(
+                              'Datos reiniciados exitosamente',
+                            ),
+                            backgroundColor: AppTheme.primaryGreen,
+                          ),
+                        );
+                      });
+                    }
+                  : null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.accentRed,
+                disabledBackgroundColor: AppTheme.textTertiary.withOpacity(0.3),
+              ),
+              child: const Text('Confirmar'),
+            ),
+          ],
+        ),
+      ),
+    ).then((_) {
+      confirmController.dispose();
+    });
   }
 }
