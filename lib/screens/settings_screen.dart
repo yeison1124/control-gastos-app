@@ -9,6 +9,7 @@ import 'budget_screen.dart';
 import 'analysis_screen.dart';
 import 'import_export_screen.dart';
 import 'preferences_screen.dart';
+import 'security_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -19,7 +20,6 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _useDecimals = true;
-  bool _safeMode = false;
   String _selectedCurrency = 'USD';
   String _selectedTheme = 'Oscuro';
   String _weekStart = 'Lunes';
@@ -153,20 +153,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildListItem(
             icon: Icons.security,
             title: 'Seguridad',
-            onTap: () {},
-          ),
-          _buildSwitchItem(
-            icon: Icons.lock,
-            title: 'Modo Seguro',
-            subtitle: 'Premium',
-            value: _safeMode,
-            onChanged: (value) {
-              setState(() {
-                _safeMode = value;
-              });
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SecurityScreen()),
+              );
             },
-            isPremium: true,
           ),
+
           _buildListItem(icon: Icons.person, title: 'Mi Cuenta', onTap: () {}),
           _buildListItem(
             icon: Icons.card_membership,
