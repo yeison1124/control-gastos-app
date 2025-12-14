@@ -199,24 +199,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: 'Danos tu Sugerencia',
             onTap: _sendFeedback,
           ),
-          _buildListItem(
-            icon: Icons.lightbulb,
-            title: 'Sugerencias',
-            onTap: () {},
-          ),
+          const SizedBox(height: 32),
 
-          // Social Media
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          // Social Media Section
+          Center(
             child: Text(
-              'Redes Sociales',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              'Síguenos y mantente informado',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: AppTheme.textSecondary,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          _buildSocialMediaRow(),
+          const SizedBox(height: 16),
+          _buildSocialMediaGrid(),
           const SizedBox(height: 24),
 
           // Data Management
@@ -496,36 +492,120 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _buildSocialMediaRow() {
+  Widget _buildSocialMediaGrid() {
+    final socialNetworks = [
+      {
+        'icon': FontAwesomeIcons.youtube,
+        'color': const Color(0xFFFF0000),
+        'name': 'YouTube',
+        'url': 'https://youtube.com/@controldegastos',
+      },
+      {
+        'icon': FontAwesomeIcons.facebook,
+        'color': const Color(0xFF1877F2),
+        'name': 'Facebook',
+        'url': 'https://facebook.com/controldegastos',
+      },
+      {
+        'icon': FontAwesomeIcons.instagram,
+        'color': const Color(0xFFE4405F),
+        'name': 'Instagram',
+        'url': 'https://instagram.com/controldegastos',
+      },
+      {
+        'icon': FontAwesomeIcons.reddit,
+        'color': const Color(0xFFFF4500),
+        'name': 'Reddit',
+        'url': 'https://reddit.com/r/controldegastos',
+      },
+      {
+        'icon': FontAwesomeIcons.tiktok,
+        'color': Colors.black,
+        'name': 'TikTok',
+        'url': 'https://tiktok.com/@controldegastos',
+      },
+      {
+        'icon': FontAwesomeIcons.shareNodes,
+        'color': AppTheme.primaryBlue,
+        'name': 'Otras Redes',
+        'url': 'https://linktr.ee/controldegastos',
+      },
+    ];
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildSocialIcon(FontAwesomeIcons.youtube, Colors.red),
-          _buildSocialIcon(FontAwesomeIcons.facebook, Colors.blue),
-          _buildSocialIcon(FontAwesomeIcons.instagram, Colors.pink),
-          _buildSocialIcon(FontAwesomeIcons.reddit, Colors.orange),
-          _buildSocialIcon(FontAwesomeIcons.tiktok, Colors.black),
-        ],
+      child: Wrap(
+        spacing: 16,
+        runSpacing: 16,
+        alignment: WrapAlignment.center,
+        children: socialNetworks.map((network) {
+          return _buildSocialIcon(
+            network['icon'] as IconData,
+            network['color'] as Color,
+            network['name'] as String,
+            network['url'] as String,
+          );
+        }).toList(),
       ),
     );
   }
 
-  Widget _buildSocialIcon(IconData icon, Color color) {
+  Widget _buildSocialIcon(IconData icon, Color color, String name, String url) {
     return InkWell(
-      onTap: () {
-        // Open social media link
-      },
+      onTap: () => _openSocialMedia(url, name),
+      borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: const EdgeInsets.all(12),
+        width: 100,
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.2),
+          color: color.withOpacity(0.1),
           borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color.withOpacity(0.3)),
         ),
-        child: FaIcon(icon, color: color, size: 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.2),
+                shape: BoxShape.circle,
+              ),
+              child: FaIcon(icon, color: color, size: 28),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              name,
+              style: TextStyle(
+                fontSize: 11,
+                color: AppTheme.textSecondary,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  Future<void> _openSocialMedia(String url, String name) async {
+    final Uri uri = Uri.parse(url);
+
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('No se pudo abrir $name'),
+            backgroundColor: AppTheme.accentRed,
+          ),
+        );
+      }
+    }
   }
 
   void _showCurrencyPicker() {
