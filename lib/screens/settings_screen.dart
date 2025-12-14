@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../config/theme.dart';
 import 'premium_screen.dart';
 import 'categories_screen.dart';
+import 'recurring_transactions_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -53,7 +54,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildListItem(
             icon: Icons.repeat,
             title: 'Transacciones Recurrentes',
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const RecurringTransactionsScreen(),
+                ),
+              );
+            },
           ),
           _buildListItem(
             icon: Icons.account_balance_wallet,
