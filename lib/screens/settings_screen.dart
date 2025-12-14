@@ -10,6 +10,7 @@ import 'analysis_screen.dart';
 import 'import_export_screen.dart';
 import 'preferences_screen.dart';
 import 'security_screen.dart';
+import 'account_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -161,7 +162,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
 
-          _buildListItem(icon: Icons.person, title: 'Mi Cuenta', onTap: () {}),
+          _buildListItem(
+            icon: Icons.person,
+            title: 'Mi Cuenta',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AccountScreen()),
+              );
+            },
+          ),
           _buildListItem(
             icon: Icons.card_membership,
             title: 'Suscripción',
