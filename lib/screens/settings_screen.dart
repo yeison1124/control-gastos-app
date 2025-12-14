@@ -190,14 +190,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // Community and Feedback
           _buildSectionHeader('Comunidad y Feedback'),
           _buildListItem(
-            icon: Icons.feedback,
-            title: 'Danos tu Opinión',
-            onTap: () {},
-          ),
-          _buildListItem(
             icon: Icons.star,
             title: 'Calificar la Aplicación',
-            onTap: () {},
+            onTap: _showRatingModal,
+          ),
+          _buildListItem(
+            icon: Icons.email,
+            title: 'Danos tu Sugerencia',
+            onTap: _sendFeedback,
           ),
           _buildListItem(
             icon: Icons.lightbulb,
@@ -725,6 +725,124 @@ class _SettingsScreenState extends State<SettingsScreen> {
       scheme: 'mailto',
       path: 'soporte@controldegastos.com',
       query: 'subject=Soporte - Control de Gastos',
+    );
+
+    if (await canLaunchUrl(emailUri)) {
+      await launchUrl(emailUri);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('No se pudo abrir el cliente de correo'),
+            backgroundColor: AppTheme.accentRed,
+          ),
+        );
+      }
+    }
+  }
+
+  void _showRatingModal() {
+    int selectedRating = 0;
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          backgroundColor: AppTheme.darkCard,
+          title: const Text(
+            'Calificar la Aplicación',
+            textAlign: TextAlign.center,
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                '¿Qué te parece nuestra app?',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 24),
+              // Star Rating
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(5, (index) {
+                  return GestureDetector(
+                    onTap: () {
+                      setDialogState(() {
+                        selectedRating = index + 1;
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Icon(
+                        index < selectedRating ? Icons.star : Icons.star_border,
+                        size: 48,
+                        color: index < selectedRating
+                            ? AppTheme.accentOrange
+                            : AppTheme.textSecondary,
+                      ),
+                    ),
+                  );
+                }),
+              ),
+              const SizedBox(height: 24),
+              // Store Link
+              TextButton.icon(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  // In production, this would open the actual store
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('Abriendo tienda de aplicaciones...'),
+                      backgroundColor: AppTheme.primaryBlue,
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.store),
+                label: const Text('Dejar Comentario en Play Store/App Store'),
+                style: TextButton.styleFrom(
+                  foregroundColor: AppTheme.primaryBlue,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: selectedRating > 0
+                  ? () {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            '¡Gracias por calificarnos con $selectedRating estrella${selectedRating > 1 ? 's' : ''}!',
+                          ),
+                          backgroundColor: AppTheme.primaryGreen,
+                        ),
+                      );
+                    }
+                  : null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primaryGreen,
+              ),
+              child: const Text('Enviar'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _sendFeedback() async {
+    final Uri emailUri = Uri(
+      scheme: 'mailto',
+      path: 'sugerencias@controldegastos.com',
+      query: Uri.encodeFull(
+        'subject=Sugerencia para Control de Gastos&body=Hola,\n\nMe gustaría sugerir lo siguiente:\n\n[Escribe tu sugerencia aquí]\n\nGracias.',
+      ),
     );
 
     if (await canLaunchUrl(emailUri)) {
