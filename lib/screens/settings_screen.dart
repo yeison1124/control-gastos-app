@@ -8,6 +8,7 @@ import 'recurring_transactions_screen.dart';
 import 'budget_screen.dart';
 import 'analysis_screen.dart';
 import 'import_export_screen.dart';
+import 'preferences_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -41,7 +42,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           // Financial Management
           _buildSectionHeader('Gestión Financiera Central'),
-          _buildListItem(icon: Icons.settings, title: 'General', onTap: () {}),
+          _buildListItem(
+            icon: Icons.tune,
+            title: 'Preferencias',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PreferencesScreen(),
+                ),
+              );
+            },
+          ),
           _buildListItem(
             icon: Icons.category,
             title: 'Categorías',
