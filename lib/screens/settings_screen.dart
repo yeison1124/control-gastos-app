@@ -6,6 +6,7 @@ import 'premium_screen.dart';
 import 'categories_screen.dart';
 import 'recurring_transactions_screen.dart';
 import 'budget_screen.dart';
+import 'analysis_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -77,7 +78,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildListItem(
             icon: Icons.analytics,
             title: 'Análisis',
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AnalysisScreen()),
+              );
+            },
           ),
           const SizedBox(height: 24),
 
