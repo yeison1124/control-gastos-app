@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../config/theme.dart';
+import 'premium_screen.dart';
+import 'categories_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -38,7 +41,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildListItem(
             icon: Icons.category,
             title: 'Categorías',
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CategoriesScreen(),
+                ),
+              );
+            },
           ),
           _buildListItem(
             icon: Icons.repeat,
@@ -217,12 +227,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           const SizedBox(height: 16),
 
-          // User email
-          Text(
-            'usuario@ejemplo.com',
-            style: Theme.of(
-              context,
-            ).textTheme.bodyLarge?.copyWith(color: AppTheme.textSecondary),
+          // User email (clickeable)
+          InkWell(
+            onTap: () => _launchEmail(),
+            child: Text(
+              'usuario@ejemplo.com',
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: AppTheme.primaryBlue,
+                decoration: TextDecoration.underline,
+              ),
+            ),
           ),
         ],
       ),
@@ -230,49 +244,57 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildPremiumCard() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppTheme.accentPurple, AppTheme.accentOrange],
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const PremiumScreen()),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [AppTheme.accentPurple, AppTheme.accentOrange],
+          ),
+          borderRadius: BorderRadius.circular(16),
         ),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(12),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(Icons.star, color: Colors.white, size: 32),
             ),
-            child: const Icon(Icons.star, color: Colors.white, size: 32),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Obtener Premium',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Obtener Premium',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Desbloquea todas las funciones',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.white.withOpacity(0.9),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Desbloquea todas las funciones',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.white.withOpacity(0.9),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
-        ],
+            const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
+          ],
+        ),
       ),
     );
   }
@@ -644,5 +666,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _launchEmail() async {
+    final Uri emailUri = Uri(
+      scheme: 'mailto',
+      path: 'soporte@controldegastos.com',
+      query: 'subject=Soporte - Control de Gastos',
+    );
+
+    if (await canLaunchUrl(emailUri)) {
+      await launchUrl(emailUri);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('No se pudo abrir el cliente de correo'),
+            backgroundColor: AppTheme.accentRed,
+          ),
+        );
+      }
+    }
   }
 }
