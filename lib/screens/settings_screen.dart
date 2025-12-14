@@ -11,6 +11,7 @@ import 'import_export_screen.dart';
 import 'preferences_screen.dart';
 import 'security_screen.dart';
 import 'account_screen.dart';
+import 'subscriptions_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -175,7 +176,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildListItem(
             icon: Icons.card_membership,
             title: 'Suscripción',
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SubscriptionsScreen(),
+                ),
+              );
+            },
           ),
           const SizedBox(height: 24),
 
