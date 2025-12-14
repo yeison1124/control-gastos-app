@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../config/theme.dart';
 import '../widgets/neumorphic_card.dart';
 
@@ -20,8 +19,6 @@ class _RecentsScreenState extends State<RecentsScreen> {
   List<String> _selectedCategories = ['Todas'];
   String? _recurringFilter;
   String? _autoPayFilter;
-
-  String _searchQuery = '';
 
   // Mock data
   final double totalExpenses = 3250.00;
@@ -161,7 +158,7 @@ class _RecentsScreenState extends State<RecentsScreen> {
                   children: [
                     // Date header
                     Padding(
-                      padding: const EdgeInsets.only(
+                      padding: EdgeInsets.only(
                         bottom: 12,
                         top: index == 0 ? 0 : 20,
                       ),

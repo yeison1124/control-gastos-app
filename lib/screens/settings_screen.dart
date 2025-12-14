@@ -75,7 +75,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onTap: () => _showCurrencyPicker(),
           ),
           _buildSwitchItem(
-            icon: Icons.decimal_increase,
+            icon: Icons.numbers,
             title: 'Usar Decimales',
             value: _useDecimals,
             onChanged: (value) {
