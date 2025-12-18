@@ -29,3 +29,22 @@ subprojects {
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
+
+// Fix for external plugins that don't specify compileSdk
+subprojects {
+    afterEvaluate { project ->
+        if (project.hasProperty("android")) {
+            project.android {
+                if (!hasProperty('compileSdkVersion')) {
+                    compileSdkVersion = 34
+                }
+                if (!hasProperty('targetSdkVersion')) {
+                    targetSdkVersion = 34
+                }
+                if (!hasProperty('minSdkVersion')) {
+                    minSdkVersion = 21
+                }
+            }
+        }
+    }
+}
