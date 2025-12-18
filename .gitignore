@@ -1,25 +1,10 @@
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
-.DS_Store
-.atom/
-.buildlog/
-.history
-.svn/
-migrate_working_dir/
+# Environment variables
+.env
+.env.local
+.env.*.local
 
-# IntelliJ related
-*.iml
-*.ipr
-*.iws
-.idea/
-
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
+# Supabase
+.supabase/
 
 # Flutter/Dart/Pub related
 **/doc/api/
@@ -32,6 +17,9 @@ migrate_working_dir/
 .pub/
 /build/
 
+# Web related
+lib/generated_plugin_registrant.dart
+
 # Symbolication related
 app.*.symbols
 
@@ -43,53 +31,12 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# iOS/XCode related
-**/ios/**/*.mode1v3
-**/ios/**/*.mode2v3
-**/ios/**/*.moved-aside
-**/ios/**/*.pbxuser
-**/ios/**/*.perspectivev3
-**/ios/**/*sync/
-**/ios/**/.sconsign.dblite
-**/ios/**/.tags*
-**/ios/**/.vagrant/
-**/ios/**/DerivedData/
-**/ios/**/Icon?
-**/ios/**/Pods/
-**/ios/**/.symlinks/
-**/ios/**/profile
-**/ios/**/xcuserdata
-**/ios/.generated/
-**/ios/Flutter/App.framework
-**/ios/Flutter/Flutter.framework
-**/ios/Flutter/Flutter.podspec
-**/ios/Flutter/Generated.xcconfig
-**/ios/Flutter/ephemeral/
-**/ios/Flutter/app.flx
-**/ios/Flutter/app.zip
-**/ios/Flutter/flutter_assets/
-**/ios/Flutter/flutter_export_environment.sh
-**/ios/ServiceDefinitions.json
-**/ios/Runner/GeneratedPluginRegistrant.*
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
 
-# Web related
-lib/generated_plugin_registrant.dart
-
-# Exceptions to above rules.
-!/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
-
-# Flutter local installation
-flutter/
-
-# Environment files
-.env
-.env.local
-.env.*.local
-
-# Firebase
-google-services.json
-GoogleService-Info.plist
-firebase_options.dart
-
-# Supabase
-supabase/.env
+# macOS
+.DS_Store
