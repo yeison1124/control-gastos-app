@@ -19,27 +19,11 @@ allprojects {
 }
 
 rootProject.buildDir = '../build'
-
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
     project.evaluationDependsOn(':app')
-    
-    // Fix for external plugins that don't specify compileSdk
-    afterEvaluate { project ->
-        if (project.hasProperty("android")) {
-            project.android {
-                if (!project.android.hasProperty('compileSdkVersion')) {
-                    compileSdkVersion = 34
-                }
-                if (!project.android.hasProperty('targetSdkVersion')) {
-                    targetSdkVersion = 34
-                }
-                if (!project.android.hasProperty('minSdkVersion')) {
-                    minSdkVersion = 21
-                }
-            }
-        }
-    }
 }
 
 tasks.register("clean", Delete) {
