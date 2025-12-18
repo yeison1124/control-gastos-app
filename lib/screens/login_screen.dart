@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../config/theme.dart';
+import '../services/auth_service.dart';
 import 'register_screen.dart';
 import 'home_screen.dart';
 
@@ -31,6 +32,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
       // Simulate login delay
       await Future.delayed(const Duration(seconds: 2));
+
+      // Save session
+      await AuthService().login(
+        email: _emailController.text,
+        name: _emailController.text.split('@')[0], // Extract name from email
+      );
 
       setState(() => _isLoading = false);
 

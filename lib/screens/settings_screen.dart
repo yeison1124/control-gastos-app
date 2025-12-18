@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../config/theme.dart';
+import '../services/auth_service.dart';
 import 'premium_screen.dart';
 import 'categories_screen.dart';
 import 'recurring_transactions_screen.dart';
@@ -12,6 +13,7 @@ import 'preferences_screen.dart';
 import 'security_screen.dart';
 import 'account_screen.dart';
 import 'subscriptions_screen.dart';
+import 'login_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -206,9 +208,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: Text(
               'Síguenos y mantente informado',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: AppTheme.textSecondary,
-                fontWeight: FontWeight.bold,
-              ),
+                    color: AppTheme.textSecondary,
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
           ),
           const SizedBox(height: 16),
@@ -222,6 +224,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: 'Reiniciar mis Datos',
             onTap: _showResetDataModal,
             textColor: AppTheme.accentRed,
+          ),
+          const SizedBox(height: 16),
+          _buildListItem(
+            icon: Icons.logout,
+            title: 'Cerrar Sesión',
+            onTap: _logout,
+            textColor: AppTheme.accentOrange,
           ),
           const SizedBox(height: 40),
 
@@ -269,9 +278,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: Text(
               'usuario@ejemplo.com',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: AppTheme.primaryBlue,
-                decoration: TextDecoration.underline,
-              ),
+                    color: AppTheme.primaryBlue,
+                    decoration: TextDecoration.underline,
+                  ),
             ),
           ),
         ],
@@ -314,16 +323,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Text(
                     'Obtener Premium',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     'Desbloquea todas las funciones',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.white.withOpacity(0.9),
-                    ),
+                          color: Colors.white.withOpacity(0.9),
+                        ),
                   ),
                 ],
               ),
@@ -341,9 +350,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Text(
         title,
         style: Theme.of(context).textTheme.titleSmall?.copyWith(
-          color: AppTheme.primaryGreen,
-          fontWeight: FontWeight.bold,
-        ),
+              color: AppTheme.primaryGreen,
+              fontWeight: FontWeight.bold,
+            ),
       ),
     );
   }
@@ -386,8 +395,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Text(
                       subtitle,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppTheme.textSecondary,
-                      ),
+                            color: AppTheme.textSecondary,
+                          ),
                     ),
                   ],
                 ],
@@ -451,7 +460,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                         child: Text(
                           'Premium',
-                          style: Theme.of(context).textTheme.bodySmall
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
                               ?.copyWith(color: Colors.white, fontSize: 10),
                         ),
                       ),
@@ -463,8 +474,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Text(
                     subtitle,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppTheme.textSecondary,
-                    ),
+                          color: AppTheme.textSecondary,
+                        ),
                   ),
                 ],
               ],
@@ -736,8 +747,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   theme == 'Claro'
                       ? Icons.light_mode
                       : theme == 'Oscuro'
-                      ? Icons.dark_mode
-                      : Icons.palette,
+                          ? Icons.dark_mode
+                          : Icons.palette,
                   color: AppTheme.primaryBlue,
                 ),
                 title: Text(theme),
@@ -1077,5 +1088,67 @@ class _SettingsScreenState extends State<SettingsScreen> {
     ).then((_) {
       confirmController.dispose();
     });
+  }
+
+  void _logout() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppTheme.darkCard,
+        title: const Text('Cerrar Sesión'),
+        content: const Text('¿Estás seguro de que deseas cerrar sesión?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context);
+
+              // Show loading
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => AlertDialog(
+                  backgroundColor: AppTheme.darkCard,
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          AppTheme.primaryGreen,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      const Text('Cerrando sesión...'),
+                    ],
+                  ),
+                ),
+              );
+
+              // Logout
+              await AuthService().logout();
+              await Future.delayed(const Duration(seconds: 1));
+
+              if (mounted) {
+                Navigator.pop(context); // Close loading dialog
+
+                // Navigate to login screen
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  (route) => false,
+                );
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.accentOrange,
+            ),
+            child: const Text('Cerrar Sesión'),
+          ),
+        ],
+      ),
+    );
   }
 }
