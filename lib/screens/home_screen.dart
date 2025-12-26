@@ -5,6 +5,10 @@ import 'package:intl/intl.dart';
 import '../widgets/neumorphic_card.dart';
 import '../config/theme.dart';
 import 'add_transaction_modal.dart';
+import 'calendar_screen.dart';
+import 'graphs_screen.dart';
+import 'accounts_screen.dart';
+import 'recents_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -91,8 +95,8 @@ class _HomeScreenState extends State<HomeScreen> {
               opaque: false,
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
-                    return FadeTransition(opacity: animation, child: child);
-                  },
+                return FadeTransition(opacity: animation, child: child);
+              },
             ),
           );
         },
@@ -243,8 +247,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text(
                       '${remainingPercentage.toInt()}%',
                       style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                        color: AppTheme.primaryGreen,
-                      ),
+                            color: AppTheme.primaryGreen,
+                          ),
                     ),
                     Text(
                       'Parte Restante',
@@ -273,9 +277,9 @@ class _HomeScreenState extends State<HomeScreen> {
         Text(
           currencyFormat.format(amount),
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: color,
-            fontWeight: FontWeight.bold,
-          ),
+                color: color,
+                fontWeight: FontWeight.bold,
+              ),
         ),
       ],
     );
@@ -359,8 +363,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   currencyFormat.format(amount),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               ],
             ),
@@ -401,18 +405,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Text(
                     currencyFormat.format(cashFlowIncome),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                 ),
               ),
               Expanded(
-                flex:
-                    (cashFlowExpenses /
-                            (cashFlowIncome + cashFlowExpenses) *
-                            100)
-                        .toInt(),
+                flex: (cashFlowExpenses /
+                        (cashFlowIncome + cashFlowExpenses) *
+                        100)
+                    .toInt(),
                 child: Container(
                   height: 40,
                   decoration: BoxDecoration(
@@ -425,9 +428,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Text(
                     currencyFormat.format(cashFlowExpenses),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                 ),
               ),
@@ -511,9 +514,9 @@ class _HomeScreenState extends State<HomeScreen> {
         Text(
           amount,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: AppTheme.accentOrange,
-            fontWeight: FontWeight.bold,
-          ),
+                color: AppTheme.accentOrange,
+                fontWeight: FontWeight.bold,
+              ),
         ),
       ],
     );
@@ -534,9 +537,39 @@ class _HomeScreenState extends State<HomeScreen> {
       child: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
+          if (index == _selectedIndex) return;
+
+          Widget screen;
+          switch (index) {
+            case 0:
+              return; // Already on home
+            case 1:
+              screen = const CalendarScreen();
+              break;
+            case 2:
+              screen = const GraphsScreen();
+              break;
+            case 3:
+              screen = const AccountsScreen();
+              break;
+            case 4:
+              screen = const RecentsScreen();
+              break;
+            default:
+              return;
+          }
+
+          Navigator.pushReplacement(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) => screen,
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return FadeTransition(opacity: animation, child: child);
+              },
+              transitionDuration: const Duration(milliseconds: 200),
+            ),
+          );
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
