@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   
   # Charts for financial visualizations
-  fl_chart: ^0.70.1
+  fl_chart: ^0.68.0
   
   # Google Fonts for modern typography
   google_fonts: ^6.2.1
@@ -51,7 +51,7 @@ dependencies:
   shared_preferences: ^2.3.3
   
   # Icons
-  font_awesome_flutter: ^10.8.0
+  font_awesome_flutter: ^10.7.0
   
   # Animations
   animations: ^2.0.11

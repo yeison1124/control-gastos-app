@@ -37,14 +37,12 @@ class AppTheme {
       useMaterial3: true,
       brightness: Brightness.dark,
       scaffoldBackgroundColor: darkBackground,
-
       colorScheme: const ColorScheme.dark(
         primary: primaryGreen,
         secondary: primaryBlue,
         surface: darkCard,
         error: accentRed,
       ),
-
       textTheme: GoogleFonts.interTextTheme(
         const TextTheme(
           displayLarge: TextStyle(
@@ -94,13 +92,11 @@ class AppTheme {
           ),
         ),
       ),
-
-      cardTheme: CardThemeData(
+      cardTheme: CardTheme(
         color: darkCard,
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
-
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -111,13 +107,11 @@ class AppTheme {
           color: textPrimary,
         ),
       ),
-
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: primaryGreen,
         foregroundColor: Colors.white,
         elevation: 8,
       ),
-
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: darkCard,
         selectedItemColor: primaryGreen,
