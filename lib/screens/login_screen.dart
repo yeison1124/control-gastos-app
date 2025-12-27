@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../config/theme.dart';
-import '../services/auth_service.dart';
+import '../services/supabase_service.dart';
 import 'register_screen.dart';
 import 'home_screen.dart';
 
@@ -30,23 +30,33 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
 
-      // Simulate login delay
-      await Future.delayed(const Duration(seconds: 2));
-
-      // Save session
-      await AuthService().login(
-        email: _emailController.text,
-        name: _emailController.text.split('@')[0], // Extract name from email
-      );
-
-      setState(() => _isLoading = false);
-
-      if (mounted) {
-        // Navigate to home screen
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
+      try {
+        // Login with Supabase
+        await SupabaseService().signInWithPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
         );
+
+        setState(() => _isLoading = false);
+
+        if (mounted) {
+          // Navigate to home screen
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+          );
+        }
+      } catch (e) {
+        setState(() => _isLoading = false);
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error: ${e.toString()}'),
+              backgroundColor: AppTheme.accentRed,
+            ),
+          );
+        }
       }
     }
   }

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../config/theme.dart';
-import '../services/auth_service.dart';
+import '../services/supabase_service.dart';
 import 'login_screen.dart';
-import 'home_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -46,31 +45,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
 
-      // Simulate registration delay
-      await Future.delayed(const Duration(seconds: 2));
-
-      // Save session
-      await AuthService().login(
-        email: _emailController.text,
-        name: _nameController.text,
-      );
-
-      setState(() => _isLoading = false);
-
-      if (mounted) {
-        // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('¡Cuenta creada exitosamente!'),
-            backgroundColor: AppTheme.primaryGreen,
-          ),
+      try {
+        // Register with Supabase
+        await SupabaseService().signUp(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+          fullName: _nameController.text.trim(),
         );
 
-        // Navigate to home screen
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
+        setState(() => _isLoading = false);
+
+        if (mounted) {
+          // Show success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('¡Cuenta creada! Verifica tu email'),
+              backgroundColor: AppTheme.primaryGreen,
+            ),
+          );
+
+          // Navigate to login screen
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+          );
+        }
+      } catch (e) {
+        setState(() => _isLoading = false);
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error: ${e.toString()}'),
+              backgroundColor: AppTheme.accentRed,
+            ),
+          );
+        }
       }
     }
   }

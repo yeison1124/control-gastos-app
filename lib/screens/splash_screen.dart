@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../config/theme.dart';
-import '../services/auth_service.dart';
+import '../services/supabase_service.dart';
 import 'login_screen.dart';
 import 'home_screen.dart';
 
@@ -48,14 +48,11 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _checkAuthStatus() async {
-    // Initialize AuthService
-    await AuthService().init();
-
     // Wait for animation to complete
     await Future.delayed(const Duration(seconds: 2));
 
-    // Check if user is logged in
-    final isLoggedIn = await AuthService().isLoggedIn();
+    // Check if user is logged in with Supabase
+    final isLoggedIn = SupabaseService().isLoggedIn;
 
     if (mounted) {
       // Navigate to appropriate screen
